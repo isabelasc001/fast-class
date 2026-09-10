@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <rect width="1440" height="900" fill="#F7F4F0"/>
+  <rect width="228" height="900" fill="#EFE9E2"/>
+  <rect x="228" width="1212" height="72" fill="#FBFAF8"/>
+  <path d="M227 0v900" stroke="#E3DDD6"/>
+  <path d="M228 71h1212" stroke="#E8E2DC"/>
+  <g font-family="Inter, Arial, sans-serif" fill="#4A4643">
+    <g transform="translate(28 31)">
+      <circle cx="12" cy="10" r="10" fill="#C66E59"/>
+      <path d="M8 10h8M12 6v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      <text x="31" y="15" font-size="16" font-weight="700" letter-spacing=".4">Gerador de Aulas</text>
+    </g>
+    <text x="28" y="111" font-size="11" font-weight="700" fill="#8E837A" letter-spacing="1.6">WORKSPACE</text>
+    <g font-size="14">
+      <text x="28" y="153">Visão geral</text>
+      <rect x="17" y="174" width="194" height="42" rx="9" fill="#E4D9D0"/>
+      <rect x="30" y="187" width="18" height="18" rx="5" fill="#C66E59"/>
+      <path d="M35 196h8M39 192v8" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/>
+      <text x="61" y="199" font-weight="700" fill="#9B5548">Criar aula</text>
+      <text x="28" y="249">Banco de questões</text>
+      <text x="28" y="295">Configurações</text>
+    </g>
+    <g transform="translate(28 813)">
+      <circle cx="16" cy="15" r="16" fill="#D8B9A9"/>
+      <text x="16" y="20" text-anchor="middle" font-size="12" font-weight="700" fill="#7D574A">IS</text>
+      <text x="45" y="13" font-size="13" font-weight="700">Isabela Santos</text>
+      <text x="45" y="32" font-size="11" fill="#8E837A">Professora de inglês</text>
+    </g>
+  </g>
+  <g font-family="Inter, Arial, sans-serif" fill="#4A4643">
+    <text x="268" y="39" font-size="12" fill="#9A9088">Workspace</text>
+    <text x="342" y="39" font-size="12" fill="#4A4643" font-weight="700">Criar aula</text>
+    <path d="M326 34l5 5-5 5" fill="none" stroke="#B0A59C"/>
+    <circle cx="1378" cy="35" r="18" fill="#C66E59"/>
+    <text x="1378" y="39" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">IS</text>
+    <text x="268" y="137" font-size="12" fill="#9A9088" font-weight="700" letter-spacing="1.2">CRIAR AULA</text>
+    <text x="268" y="183" font-family="Georgia, serif" font-size="38" fill="#403B38">Desenhe a aula com mais profundidade.</text>
+    <text x="268" y="211" font-size="15" fill="#8B8179">Adicione contexto, objetivos e materiais para uma experiência mais personalizada.</text>
+    <rect x="1116" y="119" width="248" height="58" rx="29" fill="#F0E4DB"/>
+    <text x="1179" y="154" text-anchor="middle" font-size="13" fill="#8E837A">Onda</text>
+    <rect x="1240" y="125" width="118" height="46" rx="23" fill="#C66E59"/>
+    <text x="1299" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Premium</text>
+    <rect x="268" y="250" width="1096" height="86" rx="14" fill="#EDE3DA"/>
+    <circle cx="306" cy="293" r="24" fill="#B85F4E"/>
+    <path d="M297 294l7 7 12-16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="346" y="283" font-size="15" font-weight="700" fill="#8F4F42">Plano Premium · aula detalhada</text>
+    <text x="346" y="307" font-size="13" fill="#6F655E">Mais contexto para a IA, mais controle para você e mais possibilidades de revisão.</text>
+    <text x="1260" y="294" text-anchor="end" font-size="12" fill="#8F4F42" font-weight="700">+ personalização</text>
+    <text x="268" y="391" font-size="16" font-weight="700">1. Contexto e intenção</text>
+    <text x="268" y="415" font-size="13" fill="#8E837A">Quanto mais contexto você compartilhar, mais próxima fica a primeira versão.</text>
+    <rect x="268" y="439" width="530" height="76" rx="10" fill="#fff" stroke="#E4DDD6"/>
+    <text x="292" y="465" font-size="11" fill="#9B9087" font-weight="700" letter-spacing=".7">TÍTULO DA AULA</text>
+    <text x="292" y="492" font-size="15" fill="#4A4643">Travel experiences: speaking with confidence</text>
+    <rect x="816" y="439" width="548" height="76" rx="10" fill="#fff" stroke="#E4DDD6"/>
+    <text x="840" y="465" font-size="11" fill="#9B9087" font-weight="700" letter-spacing=".7">METODOLOGIA</text>
+    <text x="840" y="492" font-size="15" fill="#4A4643">Aprendizagem baseada em projetos</text>
+    <path d="M1330 477l7 7 7-7" fill="none" stroke="#C66E59" stroke-width="2"/>
+    <rect x="268" y="537" width="1096" height="78" rx="10" fill="#fff" stroke="#E4DDD6"/>
+    <text x="292" y="564" font-size="11" fill="#9B9087" font-weight="700" letter-spacing=".7">CONTEXTO DA TURMA</text>
+    <text x="292" y="591" font-size="14" fill="#4A4643">Adultos B1, 12 alunos; precisam praticar narrativas no passado para uma viagem.</text>
+    <text x="268" y="665" font-size="16" font-weight="700">2. Objetivos e materiais</text>
+    <text x="268" y="689" font-size="13" fill="#8E837A">Inclua objetivos mensuráveis e referências para uma aula realmente sua.</text>
+    <rect x="268" y="712" width="530" height="96" rx="12" fill="#fff" stroke="#E4DDD6"/>
+    <text x="292" y="739" font-size="11" fill="#9B9087" font-weight="700" letter-spacing=".7">OBJETIVOS DE APRENDIZAGEM</text>
+    <text x="292" y="766" font-size="14" fill="#4A4643">• Narrar experiências com clareza</text>
+    <text x="292" y="789" font-size="14" fill="#4A4643">• Usar conectores de sequência</text>
+    <rect x="816" y="712" width="548" height="96" rx="12" fill="#fff" stroke="#E4DDD6"/>
+    <text x="840" y="739" font-size="11" fill="#9B9087" font-weight="700" letter-spacing=".7">MATERIAIS DE APOIO</text>
+    <rect x="840" y="754" width="168" height="32" rx="16" fill="#F0E4DB"/>
+    <text x="924" y="775" text-anchor="middle" font-size="12" font-weight="700" fill="#9B5548">Imagens 0 / 8</text>
+    <rect x="1022" y="754" width="168" height="32" rx="16" fill="#F0E4DB"/>
+    <text x="1106" y="775" text-anchor="middle" font-size="12" font-weight="700" fill="#9B5548">Arquivos 0 / 5</text>
+    <rect x="1204" y="754" width="136" height="32" rx="16" fill="#FBF8F5" stroke="#DCCFC5"/>
+    <text x="1272" y="775" text-anchor="middle" font-size="12" fill="#8E837A">+ adicionar</text>
+    <rect x="268" y="840" width="1096" height="1" fill="#E6DFD8"/>
+    <text x="268" y="867" font-size="12" fill="#8E837A">Você poderá revisar cada etapa antes de publicar a aula.</text>
+    <rect x="1150" y="846" width="214" height="42" rx="10" fill="#C66E59"/>
+    <text x="1257" y="872" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Gerar aula Premium</text>
+  </g>
+</svg>

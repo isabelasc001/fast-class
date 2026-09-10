@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#faf7f2" />
+    <title>Gerador de Aulas · Protótipo navegável</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap');
+
+      :root {
+        --color-bg: #faf7f2;
+        --color-surface: #ffffff;
+        --color-surface-muted: #f3ede4;
+        --color-surface-soft: #fcfaf7;
+        --color-text: #4a4643;
+        --color-heading: #3b2923;
+        --color-text-muted: #77716c;
+        --color-border: #cfc7bf;
+        --color-border-soft: #e9e4de;
+        --color-primary: #b85c47;
+        --color-primary-hover: #9a4f3d;
+        --color-accent: #d9823b;
+        --color-success: #5f7f67;
+        --color-warning: #c38a3a;
+        --color-error: #b64b45;
+        --radius-xs: 4px;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        --shadow-sm: 0 1px 3px rgba(59, 41, 35, 0.06);
+        --shadow-md: 0 4px 12px rgba(59, 41, 35, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+      html { min-width: 320px; background: var(--color-bg); }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: Inter, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      button, input, select, textarea { font: inherit; }
+      button { -webkit-tap-highlight-color: transparent; }
+      button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+        outline: 3px solid rgba(217, 130, 59, 0.42);
+        outline-offset: 2px;
+      }
+      button { cursor: pointer; }
+      svg { display: block; }
+
+      .app-shell { display: grid; min-height: 100vh; grid-template-columns: 240px minmax(0, 1fr); }
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 28px 16px 18px;
+        border-right: 1px solid var(--color-border-soft);
+        background: var(--color-surface-muted);
+      }
+      .wordmark { display: inline-flex; align-items: center; gap: 10px; padding: 0 12px; color: var(--color-heading); font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
+      .wordmark-mark { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 10px; background: var(--color-primary); color: #fff; box-shadow: 0 5px 12px rgba(184, 92, 71, 0.2); }
+      .workspace-label { margin: 42px 12px 10px; color: var(--color-text-muted); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+      .nav { display: grid; gap: 4px; }
+      .nav-button { display: flex; width: 100%; align-items: center; gap: 11px; min-height: 42px; padding: 0 12px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--color-text); font-size: 13px; text-align: left; transition: background 150ms ease, color 150ms ease; }
+      .nav-button:hover { background: rgba(255, 255, 255, 0.72); }
+      .nav-button[aria-current="page"] { background: #e9d4cb; color: var(--color-primary-hover); font-weight: 600; }
+      .nav-icon { width: 17px; height: 17px; flex: 0 0 auto; }
+      .sidebar-footer { margin-top: auto; padding: 16px 12px 0; border-top: 1px solid rgba(207, 199, 191, 0.72); }
+      .usage-label, .usage-meta { display: flex; justify-content: space-between; gap: 12px; color: var(--color-text-muted); font-size: 11px; line-height: 16px; }
+      .usage-label strong { color: var(--color-heading); font-weight: 600; }
+      .usage-track { height: 5px; margin: 9px 0 7px; overflow: hidden; border-radius: 99px; background: #dfd3c8; }
+      .usage-track span { display: block; width: 44%; height: 100%; border-radius: inherit; background: var(--color-accent); }
+      .profile { display: flex; align-items: center; gap: 10px; margin-top: 20px; padding: 10px 0 0; }
+      .avatar { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 50%; background: #dfc0b1; color: var(--color-primary-hover); font-size: 12px; font-weight: 700; }
+      .profile-name { color: var(--color-heading); font-size: 12px; font-weight: 600; }
+      .profile-role { margin-top: 2px; color: var(--color-text-muted); font-size: 10px; }
+
+      .main { min-width: 0; }
+      .topbar { display: flex; min-height: 76px; align-items: center; justify-content: space-between; gap: 18px; padding: 0 clamp(24px, 4vw, 64px); border-bottom: 1px solid var(--color-border-soft); background: rgba(250, 247, 242, 0.86); }
+      .breadcrumb { display: flex; align-items: center; gap: 8px; color: var(--color-text-muted); font-size: 12px; }
+      .breadcrumb strong { color: var(--color-heading); font-weight: 600; }
+      .topbar-actions { display: flex; align-items: center; gap: 10px; }
+      .icon-button { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid transparent; border-radius: var(--radius-sm); background: transparent; color: var(--color-text-muted); }
+      .icon-button:hover { border-color: var(--color-border-soft); background: var(--color-surface); color: var(--color-heading); }
+      .topbar-avatar { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; background: var(--color-primary); color: #fff; font-size: 11px; font-weight: 700; }
+
+      .page { width: min(1180px, 100%); margin: 0 auto; padding: 48px clamp(24px, 4vw, 64px) 72px; }
+      .view { display: none; animation: page-in 180ms ease-out; }
+      .view.is-active { display: block; }
+      @keyframes page-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+      .eyebrow { margin: 0 0 12px; color: var(--color-primary-hover); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; line-height: 16px; text-transform: uppercase; }
+      h1, h2, h3, p { margin-top: 0; }
+      h1, h2, h3 { color: var(--color-heading); font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; letter-spacing: -0.025em; }
+      h1 { margin-bottom: 12px; font-size: clamp(34px, 4vw, 48px); line-height: 1.04; }
+      h2 { margin-bottom: 8px; font-size: 30px; line-height: 1.12; }
+      h3 { margin-bottom: 6px; font-size: 22px; line-height: 1.2; }
+      .lead { max-width: 580px; margin-bottom: 0; color: var(--color-text-muted); font-size: 15px; line-height: 24px; }
+      .muted { color: var(--color-text-muted); }
+      .small { font-size: 12px; line-height: 18px; }
+      .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin: 48px 0 18px; }
+      .section-heading h2 { margin-bottom: 0; font-size: 25px; }
+      .section-heading a { color: var(--color-primary-hover); font-size: 12px; font-weight: 600; text-decoration: none; }
+      .section-heading a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+      .button { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; gap: 8px; padding: 0 16px; border: 1px solid transparent; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; transition: background 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease; }
+      .button:active { transform: translateY(1px); }
+      .button-primary { background: var(--color-primary); color: #fff; }
+      .button-primary:hover { background: var(--color-primary-hover); box-shadow: 0 6px 14px rgba(154, 79, 61, 0.2); }
+      .button-secondary { border-color: var(--color-border-soft); background: var(--color-surface); color: var(--color-heading); }
+      .button-secondary:hover { border-color: var(--color-primary); background: #fffdfb; }
+      .button-soft { background: var(--color-surface-muted); color: var(--color-primary-hover); }
+      .button-soft:hover { background: #ead8cf; }
+      .button-ghost { background: transparent; color: var(--color-text-muted); }
+      .button-ghost:hover { background: var(--color-surface-muted); color: var(--color-heading); }
+      .button .icon { width: 15px; height: 15px; }
+
+      .hero { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 32px; border: 1px solid rgba(184, 92, 71, 0.14); border-radius: var(--radius-xl); background: linear-gradient(112deg, #f3e4da 0%, #f8eee8 50%, #fbf7f2 100%); overflow: hidden; }
+      .hero-copy { max-width: 650px; }
+      .hero h1 { max-width: 620px; }
+      .hero-art { position: relative; width: 220px; height: 130px; flex: 0 0 auto; }
+      .hero-art::before, .hero-art::after { position: absolute; border-radius: 50%; content: ''; }
+      .hero-art::before { right: 16px; top: 10px; width: 114px; height: 114px; border: 1px solid rgba(184, 92, 71, 0.3); }
+      .hero-art::after { right: 46px; top: 41px; width: 66px; height: 66px; background: rgba(217, 130, 59, 0.17); }
+      .hero-note { position: absolute; right: 12px; bottom: 0; display: grid; width: 142px; height: 94px; place-items: center; padding: 14px; border: 1px solid rgba(184, 92, 71, 0.15); border-radius: 14px; background: rgba(255,255,255,0.78); color: var(--color-primary-hover); box-shadow: var(--shadow-md); transform: rotate(4deg); }
+      .hero-note span { display: block; color: var(--color-heading); font-family: 'DM Serif Display', Georgia, serif; font-size: 19px; line-height: 21px; text-align: center; }
+      .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+      .stat { padding: 16px 18px; border-bottom: 1px solid var(--color-border-soft); }
+      .stat strong { display: block; color: var(--color-heading); font-size: 22px; font-weight: 600; letter-spacing: -0.03em; }
+      .stat span { display: block; margin-top: 4px; color: var(--color-text-muted); font-size: 11px; }
+      .lesson-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+      .lesson-card { display: flex; min-height: 186px; flex-direction: column; padding: 20px; border: 1px solid var(--color-border-soft); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-sm); transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease; }
+      .lesson-card:hover { border-color: rgba(184, 92, 71, 0.42); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+      .lesson-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .subject-tag, .status-tag, .meta-tag { display: inline-flex; min-height: 22px; align-items: center; padding: 0 8px; border-radius: 99px; font-size: 10px; font-weight: 600; }
+      .subject-tag { background: #f9e2d4; color: var(--color-primary-hover); }
+      .status-tag { background: #eef4ee; color: var(--color-success); }
+      .status-tag.draft { background: #fbf0de; color: #9b6e2c; }
+      .lesson-card h3 { margin: 23px 0 5px; font-size: 22px; }
+      .lesson-card p { margin-bottom: 0; color: var(--color-text-muted); font-size: 12px; line-height: 19px; }
+      .lesson-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 20px; color: var(--color-text-muted); font-size: 10px; }
+      .lesson-card-footer a { color: var(--color-primary-hover); font-size: 11px; font-weight: 600; text-decoration: none; }
+
+      .builder-header { display: flex; align-items: start; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
+      .mode-switch { display: inline-flex; align-items: center; gap: 3px; padding: 3px; border: 1px solid var(--color-border-soft); border-radius: var(--radius-md); background: var(--color-surface); }
+      .mode-switch button { min-height: 32px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; color: var(--color-text-muted); font-size: 11px; font-weight: 600; }
+      .mode-switch button.is-selected { background: var(--color-surface-muted); color: var(--color-primary-hover); }
+      .builder-layout { display: grid; grid-template-columns: 174px minmax(0, 1fr); gap: 48px; align-items: start; }
+      .stepper { position: sticky; top: 24px; display: grid; gap: 8px; }
+      .step { position: relative; display: flex; align-items: start; gap: 11px; padding: 8px 0; color: var(--color-text-muted); font-size: 11px; line-height: 17px; }
+      .step:not(:last-child)::after { position: absolute; top: 29px; left: 11px; width: 1px; height: 27px; background: var(--color-border-soft); content: ''; }
+      .step-dot { display: grid; width: 22px; height: 22px; flex: 0 0 auto; place-items: center; border: 1px solid var(--color-border); border-radius: 50%; background: var(--color-bg); color: var(--color-text-muted); font-size: 10px; font-weight: 600; }
+      .step.is-active { color: var(--color-heading); font-weight: 600; }
+      .step.is-active .step-dot { border-color: var(--color-primary); background: var(--color-primary); color: #fff; }
+      .step.is-done .step-dot { border-color: var(--color-success); background: #eef4ee; color: var(--color-success); }
+      .builder-form { max-width: 720px; }
+      .form-section { padding: 0 0 32px; margin-bottom: 30px; border-bottom: 1px solid var(--color-border-soft); }
+      .form-section:last-child { border-bottom: 0; }
+      .form-section-heading { display: flex; align-items: start; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+      .form-section-heading h2 { margin-bottom: 4px; font-size: 23px; }
+      .form-section-heading p { margin-bottom: 0; color: var(--color-text-muted); font-size: 12px; line-height: 19px; }
+      .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; }
+      .field { display: grid; gap: 7px; }
+      .field.full { grid-column: 1 / -1; }
+      .field label { color: var(--color-heading); font-size: 12px; font-weight: 600; line-height: 17px; }
+      .input, .select, .textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); outline: none; background: var(--color-surface); color: var(--color-text); font-size: 12px; transition: border-color 150ms ease, box-shadow 150ms ease; }
+      .input, .select { min-height: 42px; }
+      .textarea { min-height: 92px; resize: vertical; line-height: 19px; }
+      .input::placeholder, .textarea::placeholder { color: #a49c95; }
+      .input:hover, .select:hover, .textarea:hover { border-color: #b8aea6; }
+      .input:focus, .select:focus, .textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 4px rgba(184, 92, 71, 0.15); }
+      .field-hint { color: var(--color-text-muted); font-size: 10px; line-height: 15px; }
+      .choice-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+      .choice { position: relative; }
+      .choice input { position: absolute; opacity: 0; pointer-events: none; }
+      .choice label { display: flex; min-height: 44px; align-items: center; justify-content: center; padding: 0 8px; border: 1px solid var(--color-border-soft); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text-muted); cursor: pointer; font-size: 11px; font-weight: 500; text-align: center; transition: border-color 150ms ease, background 150ms ease, color 150ms ease; }
+      .choice label:hover { border-color: var(--color-primary); }
+      .choice input:checked + label { border-color: rgba(184, 92, 71, 0.55); background: #f8ebe5; color: var(--color-primary-hover); font-weight: 600; }
+      .check-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
+      .check { display: flex; align-items: start; gap: 8px; color: var(--color-text); font-size: 12px; line-height: 18px; }
+      .check input { width: 15px; height: 15px; flex: 0 0 auto; margin: 1px 0 0; accent-color: var(--color-primary); }
+      .mode-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .mode-card { position: relative; display: grid; gap: 8px; padding: 16px; border: 1px solid var(--color-border-soft); border-radius: var(--radius-md); background: var(--color-surface); cursor: pointer; }
+      .mode-card.is-selected { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(184, 92, 71, 0.11); }
+      .mode-card input { position: absolute; opacity: 0; }
+      .mode-card-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--color-heading); font-size: 13px; font-weight: 600; }
+      .mode-card-title svg { color: var(--color-accent); }
+      .mode-card p { margin-bottom: 0; color: var(--color-text-muted); font-size: 11px; line-height: 17px; }
+      .upload { display: flex; min-height: 104px; align-items: center; justify-content: center; gap: 12px; padding: 18px; border: 1px dashed #cbbab0; border-radius: var(--radius-md); background: var(--color-surface-soft); color: var(--color-text-muted); text-align: center; }
+      .upload-icon { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; background: #f8e5d8; color: var(--color-primary); }
+      .upload strong { display: block; color: var(--color-heading); font-size: 12px; }
+      .upload span { display: block; margin-top: 4px; font-size: 10px; }
+      .builder-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 8px; }
+      .privacy-note { display: flex; align-items: center; gap: 7px; color: var(--color-text-muted); font-size: 10px; }
+
+      .loading-card { max-width: 760px; margin: 46px auto 0; padding: 58px 48px; border: 1px solid rgba(184, 92, 71, 0.15); border-radius: var(--radius-xl); background: var(--color-surface); box-shadow: var(--shadow-md); text-align: center; }
+      .loading-sparkle { display: grid; width: 52px; height: 52px; margin: 0 auto 25px; place-items: center; border-radius: 16px; background: #f9e2c9; color: var(--color-accent); animation: sparkle-pulse 1.5s ease-in-out infinite; }
+      @keyframes sparkle-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+      .loading-card h1 { margin-bottom: 11px; font-size: 34px; }
+      .loading-card p { margin-bottom: 28px; color: var(--color-text-muted); font-size: 13px; }
+      .loading-steps { display: grid; max-width: 340px; gap: 12px; margin: 0 auto; text-align: left; }
+      .loading-step { display: flex; align-items: center; gap: 10px; color: var(--color-text-muted); font-size: 12px; }
+      .loading-step .status { display: grid; width: 20px; height: 20px; place-items: center; border: 1px solid var(--color-border-soft); border-radius: 50%; background: var(--color-bg); color: var(--color-text-muted); font-size: 10px; }
+      .loading-step.is-current { color: var(--color-heading); font-weight: 600; }
+      .loading-step.is-current .status { border-color: var(--color-primary); color: var(--color-primary); }
+      .loading-step.is-done { color: var(--color-success); }
+      .loading-step.is-done .status { border-color: var(--color-success); background: #eef4ee; color: var(--color-success); }
+      .loading-progress { height: 4px; margin: 31px auto 0; overflow: hidden; border-radius: 99px; background: var(--color-border-soft); }
+      .loading-progress span { display: block; width: 28%; height: 100%; border-radius: inherit; background: var(--color-primary); transition: width 500ms ease; }
+
+      .result-shell { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
+      .result-main { min-width: 0; }
+      .result-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+      .result-toolbar-actions { display: flex; align-items: center; gap: 7px; }
+      .result-toolbar-actions .button { min-height: 36px; padding: 0 11px; font-size: 11px; }
+      .result-title-row { display: flex; align-items: start; justify-content: space-between; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid var(--color-border-soft); }
+      .result-title-row h1 { margin-bottom: 10px; font-size: 40px; }
+      .result-title-row p { margin-bottom: 0; color: var(--color-text-muted); font-size: 12px; line-height: 19px; }
+      .result-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+      .meta-tag { border: 1px solid var(--color-border-soft); background: var(--color-surface); color: var(--color-text-muted); }
+      .result-status { display: inline-flex; align-items: center; gap: 6px; color: var(--color-success); font-size: 11px; font-weight: 600; white-space: nowrap; }
+      .result-status::before { width: 7px; height: 7px; border-radius: 50%; background: var(--color-success); content: ''; }
+      .document { padding: 26px 0 0; }
+      .document-section { padding: 0 0 25px; margin-bottom: 25px; border-bottom: 1px solid var(--color-border-soft); }
+      .document-section:last-child { border-bottom: 0; }
+      .document-kicker { margin-bottom: 8px; color: var(--color-primary-hover); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+      .document-section h2 { margin-bottom: 11px; font-size: 24px; }
+      .document-section p, .document-section li { color: var(--color-text); font-size: 12px; line-height: 20px; }
+      .document-section ul { margin: 0; padding-left: 18px; }
+      .objectives { display: grid; gap: 8px; }
+      .objective { display: flex; align-items: start; gap: 9px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--color-surface-muted); color: var(--color-text); font-size: 12px; line-height: 18px; }
+      .objective svg { flex: 0 0 auto; margin-top: 1px; color: var(--color-success); }
+      .activity-list { display: grid; gap: 12px; }
+      .activity { padding: 15px 16px; border: 1px solid var(--color-border-soft); border-radius: var(--radius-md); background: var(--color-surface); }
+      .activity-header { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 10px; }
+      .activity-number { color: var(--color-primary-hover); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+      .activity-time { color: var(--color-text-muted); font-size: 10px; }
+      .activity h3 { margin-bottom: 5px; font-size: 19px; }
+      .activity p { margin-bottom: 0; }
+      .traceability { display: flex; align-items: start; gap: 10px; padding: 12px 14px; border-left: 3px solid var(--color-accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; background: #fff6eb; }
+      .traceability p { margin-bottom: 0; color: #6e5a49; font-size: 11px; line-height: 18px; }
+      .assistant { position: sticky; top: 24px; padding: 18px; border: 1px solid rgba(184, 92, 71, 0.2); border-radius: var(--radius-lg); background: #f8eee8; }
+      .assistant-header { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; }
+      .assistant-sparkle { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 10px; background: #f9dfc1; color: var(--color-accent); }
+      .assistant-title { color: var(--color-heading); font-size: 13px; font-weight: 600; }
+      .assistant-subtitle { margin-top: 2px; color: var(--color-text-muted); font-size: 10px; }
+      .assistant p { margin-bottom: 13px; color: var(--color-text); font-size: 11px; line-height: 17px; }
+      .ai-actions { display: grid; gap: 7px; }
+      .ai-action { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 11px; border: 1px solid rgba(184, 92, 71, 0.15); border-radius: var(--radius-sm); background: rgba(255,255,255,0.66); color: var(--color-primary-hover); font-size: 10px; font-weight: 600; text-align: left; }
+      .ai-action:hover { border-color: var(--color-primary); background: #fff; }
+      .assistant-divider { height: 1px; margin: 16px 0; background: rgba(184, 92, 71, 0.15); }
+      .assistant-input { display: flex; align-items: center; gap: 6px; padding: 4px 5px 4px 10px; border: 1px solid rgba(184, 92, 71, 0.2); border-radius: var(--radius-sm); background: rgba(255,255,255,0.72); }
+      .assistant-input input { width: 100%; min-width: 0; padding: 5px 0; border: 0; outline: 0; background: transparent; color: var(--color-heading); font-size: 10px; }
+      .assistant-input button { display: grid; width: 26px; height: 26px; place-items: center; border: 0; border-radius: 6px; background: var(--color-primary); color: #fff; }
+      .assistant-feedback { display: none; margin-top: 12px; padding: 9px 10px; border-radius: var(--radius-sm); background: #eef4ee; color: #48624f; font-size: 10px; line-height: 15px; }
+      .assistant-feedback.is-visible { display: block; }
+
+      .bank-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 34px 0 20px; }
+      .bank-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+      .filter-select { min-height: 36px; padding: 0 10px; border: 1px solid var(--color-border-soft); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text-muted); font-size: 11px; }
+      .search { display: flex; min-width: 230px; align-items: center; gap: 8px; padding: 0 11px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); }
+      .search input { width: 100%; min-height: 36px; border: 0; outline: 0; background: transparent; color: var(--color-heading); font-size: 11px; }
+      .question-list { display: grid; gap: 10px; }
+      .question { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding: 18px 20px; border: 1px solid var(--color-border-soft); border-radius: var(--radius-md); background: var(--color-surface); }
+      .question:hover { border-color: rgba(184, 92, 71, 0.35); }
+      .question h3 { margin-bottom: 7px; font-family: Inter, Arial, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0; line-height: 19px; }
+      .question p { margin-bottom: 10px; color: var(--color-text-muted); font-size: 11px; line-height: 17px; }
+      .question-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+      .question-actions { display: flex; align-items: start; gap: 5px; }
+      .question-actions button { display: grid; width: 32px; height: 32px; place-items: center; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--color-text-muted); }
+      .question-actions button:hover { background: var(--color-surface-muted); color: var(--color-primary-hover); }
+      .empty-note { display: none; padding: 30px; border: 1px dashed var(--color-border); border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 12px; text-align: center; }
+
+      .toast { position: fixed; right: 24px; bottom: 24px; z-index: 10; display: flex; align-items: start; gap: 10px; max-width: 340px; padding: 13px 15px; border: 1px solid rgba(95, 127, 103, 0.24); border-radius: var(--radius-sm); background: #f1f6f1; color: #48624f; box-shadow: var(--shadow-md); font-size: 11px; line-height: 17px; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity 180ms ease, transform 180ms ease; }
+      .toast.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+      @media (max-width: 980px) {
+        .app-shell { grid-template-columns: 76px minmax(0, 1fr); }
+        .sidebar { align-items: center; padding-inline: 10px; }
+        .wordmark { padding: 0; }
+        .wordmark span:last-child, .workspace-label, .nav-button span, .sidebar-footer { display: none; }
+        .nav { width: 100%; margin-top: 42px; }
+        .nav-button { justify-content: center; padding: 0; }
+        .topbar { padding-inline: 24px; }
+        .builder-layout { grid-template-columns: 1fr; gap: 30px; }
+        .stepper { position: static; display: flex; justify-content: space-between; gap: 6px; }
+        .step { align-items: center; padding: 0; }
+        .step:not(:last-child)::after { top: 11px; left: calc(100% + 5px); width: 16px; height: 1px; }
+        .step > div:last-child { display: none; }
+        .result-shell { grid-template-columns: 1fr; }
+        .assistant { position: static; }
+      }
+      @media (max-width: 720px) {
+        .app-shell { display: block; }
+        .sidebar { position: fixed; right: 0; bottom: 0; left: 0; z-index: 5; display: block; min-height: auto; padding: 7px 10px; border-top: 1px solid var(--color-border-soft); border-right: 0; }
+        .wordmark, .workspace-label, .sidebar-footer { display: none; }
+        .nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 0; }
+        .nav-button { min-height: 48px; flex-direction: column; justify-content: center; gap: 3px; padding: 4px; font-size: 9px; }
+        .nav-button span { display: block; }
+        .main { padding-bottom: 70px; }
+        .topbar { min-height: 64px; padding-inline: 18px; }
+        .page { padding: 32px 18px 52px; }
+        .hero { align-items: start; padding: 25px 22px; }
+        .hero-art { display: none; }
+        .stats { grid-template-columns: 1fr; gap: 0; }
+        .stat { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; }
+        .stat strong { font-size: 18px; }
+        .lesson-grid { grid-template-columns: 1fr; }
+        .builder-header { display: block; }
+        .mode-switch { margin-top: 18px; }
+        .field-grid, .mode-cards, .check-grid { grid-template-columns: 1fr; }
+        .choice-grid { grid-template-columns: repeat(2, 1fr); }
+        .builder-footer, .result-toolbar, .bank-toolbar { align-items: stretch; flex-direction: column; }
+        .builder-footer .button, .result-toolbar-actions .button { width: 100%; }
+        .result-toolbar-actions { display: grid; grid-template-columns: repeat(2, 1fr); }
+        .result-title-row { display: block; }
+        .result-status { margin-top: 15px; }
+        .result-title-row h1 { font-size: 34px; }
+        .search { min-width: 0; }
+        .question { grid-template-columns: 1fr; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegação principal">
+        <div class="wordmark">
+          <span class="wordmark-mark" aria-hidden="true">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+          </span>
+          <span>Gerador de Aulas</span>
+        </div>
+        <div class="workspace-label">Workspace</div>
+        <nav class="nav">
+          <button class="nav-button" type="button" data-view-target="dashboard" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Visão geral</span>
+          </button>
+          <button class="nav-button" type="button" data-view-target="builder">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><path d="m19 5-2-2-4 4 2 2 4-4Z"/></svg><span>Criar aula</span>
+          </button>
+          <button class="nav-button" type="button" data-view-target="bank">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>Banco de questões</span>
+          </button>
+          <button class="nav-button" type="button" data-view-target="result">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg><span>Última aula</span>
+          </button>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="usage-label"><strong>Plano Professor</strong><span>44%</span></div>
+          <div class="usage-track"><span></span></div>
+          <div class="usage-meta"><span>11 de 25 gerações</span><span>Renova em 12 dias</span></div>
+          <div class="profile"><div class="avatar">IS</div><div><div class="profile-name">Isabela Santos</div><div class="profile-role">Professora de inglês</div></div></div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="breadcrumb"><span>Workspace</span><span aria-hidden="true">/</span><strong id="breadcrumb-current">Visão geral</strong></div>
+          <div class="topbar-actions">
+            <button class="icon-button" type="button" aria-label="Ajuda"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 1 1 5.1 2.1c-1.2 1.1-2.2 1.6-2.2 3.1M12 17.5h.01"/></svg></button>
+            <button class="topbar-avatar" type="button" aria-label="Abrir perfil">IS</button>
+          </div>
+        </header>
+
+        <div class="page">
+          <section class="view is-active" id="view-dashboard" aria-labelledby="dashboard-title">
+            <div class="hero">
+              <div class="hero-copy">
+                <p class="eyebrow">Quarta-feira, 4 de setembro</p>
+                <h1 id="dashboard-title">Boa tarde, Isabela.</h1>
+                <p class="lead">O que você quer ensinar hoje? Organize a próxima aula com contexto, clareza e um pouco de ajuda da IA.</p>
+                <div style="margin-top:24px"><button class="button button-primary" type="button" data-view-target="builder"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Criar nova aula</button></div>
+              </div>
+              <div class="hero-art" aria-hidden="true"><div class="hero-note"><span>Uma boa aula começa com uma boa pergunta.</span></div></div>
+            </div>
+            <div class="stats" aria-label="Resumo do workspace">
+              <div class="stat"><strong>12</strong><span>aulas criadas</span></div>
+              <div class="stat"><strong>8h 40</strong><span>tempo de preparação economizado</span></div>
+              <div class="stat"><strong>94%</strong><span>das aulas alinhadas a objetivos</span></div>
+            </div>
+            <div class="section-heading"><h2>Aulas recentes</h2><a href="#" data-view-target="result">Ver todas as aulas <span aria-hidden="true">→</span></a></div>
+            <div class="lesson-grid">
+              <article class="lesson-card"><div class="lesson-card-top"><span class="subject-tag">Inglês</span><span class="status-tag">Pronta</span></div><h3>Travel experiences</h3><p>Conversação sobre viagens com revisão de present perfect.</p><div class="lesson-card-footer"><span>Intermediário · 60 min</span><a href="#" data-view-target="result">Abrir aula →</a></div></article>
+              <article class="lesson-card"><div class="lesson-card-top"><span class="subject-tag">Inglês</span><span class="status-tag draft">Rascunho</span></div><h3>Food and culture</h3><p>Vocabulário, leitura e atividade de fala para pequenos grupos.</p><div class="lesson-card-footer"><span>Intermediário · 45 min</span><a href="#" data-view-target="builder">Continuar →</a></div></article>
+              <article class="lesson-card"><div class="lesson-card-top"><span class="subject-tag">Inglês</span><span class="status-tag">Pronta</span></div><h3>Past narratives</h3><p>Sequência com narrativa, escrita guiada e avaliação formativa.</p><div class="lesson-card-footer"><span>Avançado · 90 min</span><a href="#" data-view-target="result">Abrir aula →</a></div></article>
+            </div>
+          </section>
+
+          <section class="view" id="view-builder" aria-labelledby="builder-title">
+            <div class="builder-header"><div><p class="eyebrow">Criar aula</p><h1 id="builder-title">Vamos preparar algo bom.</h1><p class="lead">Conte o essencial sobre a sua turma. A IA organiza o restante em uma aula pronta para você revisar.</p></div><div class="mode-switch" aria-label="Modo de geração"><button type="button" class="is-selected" data-mode="fast">Fast</button><button type="button" data-mode="creative">Criativo</button></div></div>
+            <div class="builder-layout">
+              <div class="stepper" aria-label="Etapas da criação"><div class="step is-active"><span class="step-dot">1</span><div>Contexto</div></div><div class="step"><span class="step-dot">2</span><div>Objetivos</div></div><div class="step"><span class="step-dot">3</span><div>Materiais</div></div><div class="step"><span class="step-dot">4</span><div>Geração</div></div></div>
+              <form class="builder-form" id="lesson-form">
+                <div class="form-section"><div class="form-section-heading"><div><h2>Sobre esta aula</h2><p>Comece pelo conteúdo que os estudantes precisam encontrar.</p></div><span class="small muted">01 / 04</span></div><div class="field-grid"><div class="field"><label for="subject">Disciplina</label><select class="select" id="subject"><option>Inglês</option><option>História</option><option>Ciências</option><option>Matemática</option></select></div><div class="field"><label for="topic">Tema da aula</label><input class="input" id="topic" value="Travel experiences" placeholder="Ex.: Present Perfect" /></div><div class="field full"><label for="context">O que você quer ensinar?</label><textarea class="textarea" id="context" placeholder="Descreva a ideia principal, o material que já possui ou o ponto de partida da aula.">Quero trabalhar experiências de viagem e usar o present perfect para que os alunos compartilhem histórias pessoais.</textarea><span class="field-hint">Uma ou duas frases já são suficientes no modo Fast.</span></div></div></div>
+                <div class="form-section"><div class="form-section-heading"><div><h2>Quem são seus alunos?</h2><p>Ajuste o nível e o tempo disponível para a aula.</p></div><span class="small muted">02 / 04</span></div><div class="field-grid"><div class="field full"><label>Nível da turma</label><div class="choice-grid"><div class="choice"><input id="beginner" type="radio" name="level" /><label for="beginner">Iniciante</label></div><div class="choice"><input id="elementary" type="radio" name="level" /><label for="elementary">Básico</label></div><div class="choice"><input id="intermediate" type="radio" name="level" checked /><label for="intermediate">Intermediário</label></div><div class="choice"><input id="advanced" type="radio" name="level" /><label for="advanced">Avançado</label></div></div></div><div class="field"><label for="duration">Duração</label><select class="select" id="duration"><option>30 minutos</option><option>45 minutos</option><option selected>60 minutos</option><option>90 minutos</option></select></div><div class="field"><label for="students">Quantidade de alunos</label><select class="select" id="students"><option>Até 10 alunos</option><option selected>11–20 alunos</option><option>21–35 alunos</option><option>Mais de 35 alunos</option></select></div></div></div>
+                <div class="form-section"><div class="form-section-heading"><div><h2>Objetivos de aprendizagem</h2><p>Escolha até três resultados que devem aparecer na aula.</p></div><span class="small muted">03 / 04</span></div><div class="check-grid"><label class="check"><input type="checkbox" checked />Praticar conversação</label><label class="check"><input type="checkbox" checked />Aprender vocabulário</label><label class="check"><input type="checkbox" />Revisar gramática</label><label class="check"><input type="checkbox" />Praticar escrita</label><label class="check"><input type="checkbox" />Ler e interpretar</label><label class="check"><input type="checkbox" />Trabalhar colaboração</label></div></div>
+                <div class="form-section"><div class="form-section-heading"><div><h2>Como a aula deve acontecer?</h2><p>Escolha uma abordagem. Você poderá editar tudo depois.</p></div><span class="small muted">04 / 04</span></div><div class="field-grid"><div class="field full"><label>Estilo de aula</label><div class="choice-grid"><div class="choice"><input id="conversational" type="radio" name="style" /><label for="conversational">Conversação</label></div><div class="choice"><input id="balanced" type="radio" name="style" checked /><label for="balanced">Equilibrada</label></div><div class="choice"><input id="grammar" type="radio" name="style" /><label for="grammar">Gramática</label></div><div class="choice"><input id="project" type="radio" name="style" /><label for="project">Projeto</label></div></div></div><div class="field full"><label>Materiais próprios <span class="muted" style="font-weight:400">(opcional)</span></label><div class="upload"><div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div><div><strong>Arraste um PDF, DOCX ou imagem</strong><span>Até 10 MB · seus arquivos ficam privados</span></div></div></div></div></div>
+                <div class="builder-footer"><div class="privacy-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Seus dados ficam sob seu controle.</div><button class="button button-primary" id="generate-button" type="submit"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.4 5.6L19 10l-5.6 1.4L12 17l-1.4-5.6L5 10l5.6-1.4L12 3Z"/><path d="m19 16 .6 2.4L22 19l-2.4.6L19 22l-.6-2.4L16 19l2.4-.6L19 16Z"/></svg>Gerar minha aula</button></div>
+              </form>
+            </div>
+          </section>
+
+          <section class="view" id="view-loading" aria-labelledby="loading-title">
+            <div class="loading-card"><div class="loading-sparkle"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 7.3L21 11l-7.3 1.7L12 20l-1.7-7.3L3 11l7.3-1.7L12 2Z"/><path d="m19 17 .5 2.5L22 20l-2.5.5L19 23l-.5-2.5L16 20l2.5-.5L19 17Z"/></svg></div><p class="eyebrow">Assistência em andamento</p><h1 id="loading-title">Criando sua aula</h1><p>Estamos transformando seu contexto em uma sequência que faça sentido para a turma.</p><div class="loading-steps"><div class="loading-step is-current" data-loading-step="1"><span class="status">1</span><span>Entendendo seus objetivos</span></div><div class="loading-step" data-loading-step="2"><span class="status">2</span><span>Organizando as atividades</span></div><div class="loading-step" data-loading-step="3"><span class="status">3</span><span>Preparando as notas do professor</span></div></div><div class="loading-progress"><span id="loading-progress"></span></div></div>
+          </section>
+
+          <section class="view" id="view-result" aria-labelledby="result-title">
+            <div class="result-toolbar"><div class="breadcrumb"><span>Aulas</span><span aria-hidden="true">/</span><strong>Travel experiences</strong></div><div class="result-toolbar-actions"><button class="button button-secondary" type="button" data-toast="A aula voltou para o modo de edição."><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 20 9-9-3-3-9 9-1 4 4-1ZM16 5l3 3M4 20h4"/></svg>Editar</button><button class="button button-secondary" type="button" data-toast="Uma nova versão será preparada mantendo seu contexto."><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 5v4h4M4 13a8.1 8.1 0 0 0 15.5 2M20 19v-4h-4"/></svg>Regenerar</button><button class="button button-primary" type="button" data-toast="Aula salva no seu workspace."><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Salvar</button><button class="button button-soft" type="button" data-toast="Preparando o PDF para exportação."><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Exportar PDF</button></div></div>
+            <div class="result-shell"><article class="result-main"><div class="result-title-row"><div><p class="eyebrow">Plano de aula · pronto para revisão</p><h1 id="result-title">Travel experiences</h1><p>Uma aula para falar sobre experiências pessoais usando o present perfect com confiança e contexto.</p><div class="result-meta"><span class="meta-tag">Inglês</span><span class="meta-tag">Intermediário</span><span class="meta-tag">60 minutos</span><span class="meta-tag">Equilibrada</span></div></div><span class="result-status">Salva automaticamente</span></div><div class="document"><section class="document-section"><div class="document-kicker">Objetivos de aprendizagem</div><h2>Ao final da aula, os alunos serão capazes de:</h2><div class="objectives"><div class="objective"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>Compartilhar experiências de viagem usando frases no present perfect.</div><div class="objective"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>Reconhecer e aplicar vocabulário relacionado a viagens e destinos.</div><div class="objective"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>Fazer perguntas de acompanhamento para manter uma conversa.</div></div></section><section class="document-section"><div class="document-kicker">Sequência didática</div><h2>Atividades</h2><div class="activity-list"><div class="activity"><div class="activity-header"><span class="activity-number">01 · AQUECIMENTO</span><span class="activity-time">10 minutos</span></div><h3>Have you ever…?</h3><p>Apresente três imagens de destinos e convide os alunos a responderem à pergunta usando gestos ou frases curtas. Registre no quadro as estruturas que surgirem.</p></div><div class="activity"><div class="activity-header"><span class="activity-number">02 · VOCABULÁRIO</span><span class="activity-time">15 minutos</span></div><h3>Travel stories map</h3><p>Em duplas, os estudantes conectam cartões de vocabulário a situações de viagem. Em seguida, criam uma frase verdadeira para dois cartões escolhidos.</p></div><div class="activity"><div class="activity-header"><span class="activity-number">03 · CONVERSAÇÃO</span><span class="activity-time">25 minutos</span></div><h3>Two truths and a trip</h3><p>Cada aluno escreve três frases sobre viagens — duas verdadeiras e uma inventada. Os colegas fazem perguntas para descobrir qual é a história que não aconteceu.</p></div></div></section><section class="document-section"><div class="document-kicker">Avaliação formativa</div><h2>Exit ticket</h2><p>Peça que cada estudante registre uma experiência que já teve, uma que ainda não teve e uma pergunta para um colega. Observe uso da estrutura, clareza e participação na conversa.</p><div class="traceability"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg><p><strong>Rastreabilidade:</strong> objetivos alinhados à habilidade EF09LI02 e ao material “Travel vocabulary · unidade 4”. Revise a habilidade antes de exportar.</p></div></section><section class="document-section"><div class="document-kicker">Continuidade</div><h2>Se a turma precisar de reforço</h2><p>Retome as frases-modelo com cartões de apoio visual e ofereça uma rodada de perguntas fechadas antes de voltar à produção livre. Para quem avançar mais rápido, peça uma justificativa para cada escolha.</p></section></div></article><aside class="assistant" aria-label="Assistente de IA"><div class="assistant-header"><div class="assistant-sparkle"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 7.3L21 11l-7.3 1.7L12 20l-1.7-7.3L3 11l7.3-1.7L12 2Z"/></svg></div><div><div class="assistant-title">Assistente de IA</div><div class="assistant-subtitle">Refine a aula com segurança</div></div></div><p>O que você gostaria de melhorar? A IA sugere mudanças; você decide o que fica.</p><div class="ai-actions"><button class="ai-action" type="button" data-ai-action="A atividade 03 ficou mais interativa. Incluí perguntas de acompanhamento e uma variação para grupos de quatro alunos.">Tornar esta atividade mais interativa <span>→</span></button><button class="ai-action" type="button" data-ai-action="Criei um exercício curto de fala para praticar have you ever…? antes da conversa principal.">Criar exercício de fala <span>→</span></button><button class="ai-action" type="button" data-ai-action="Adaptei as instruções com frases mais curtas e um exemplo preenchido para alunos iniciantes.">Adaptar para iniciantes <span>→</span></button><button class="ai-action" type="button" data-ai-action="Adicionei um dever de casa opcional com três frases sobre experiências pessoais.">Adicionar dever de casa <span>→</span></button></div><div class="assistant-divider"></div><div class="assistant-input"><input id="assistant-question" placeholder="Pergunte alguma coisa…" /><button id="assistant-send" type="button" aria-label="Enviar pergunta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 4 16 8-16 8 3-8-3-8ZM7 12h13"/></svg></button></div><div class="assistant-feedback" id="assistant-feedback"></div></aside></div>
+          </section>
+
+          <section class="view" id="view-bank" aria-labelledby="bank-title">
+            <p class="eyebrow">Banco de questões</p><h1 id="bank-title">Questões que você pode reutilizar.</h1><p class="lead">Salve boas perguntas, organize por habilidade e leve o que funciona para a próxima turma.</p><div class="bank-toolbar"><div class="bank-filters"><select class="filter-select" aria-label="Filtrar por disciplina"><option>Todas as disciplinas</option><option>Inglês</option><option>História</option></select><select class="filter-select" aria-label="Filtrar por dificuldade"><option>Qualquer dificuldade</option><option>Fácil</option><option>Média</option><option>Difícil</option></select><select class="filter-select" aria-label="Filtrar por tipo"><option>Todos os tipos</option><option>Aberta</option><option>Múltipla escolha</option></select></div><label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="question-search" placeholder="Buscar questão" /></label></div><div class="question-list" id="question-list"><article class="question" data-question-text="Have you ever visited another country?"><div><h3>Have you ever visited another country? Explain where and when.</h3><p>Questão aberta para iniciar uma conversa sobre experiências pessoais.</p><div class="question-tags"><span class="subject-tag">Inglês</span><span class="meta-tag">Conversação</span><span class="meta-tag">Intermediário</span><span class="meta-tag">EF09LI02</span></div></div><div class="question-actions"><button type="button" aria-label="Editar questão" data-toast="Questão pronta para edição."><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 20 9-9-3-3-9 9-1 4 4-1Z"/></svg></button><button type="button" aria-label="Excluir questão" data-toast="A exclusão está protegida neste protótipo."><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg></button></div></article><article class="question" data-question-text="Choose the best answer: I have never been to Canada."><div><h3>Choose the best answer: “I have never ___ to Canada.”</h3><p>Questão de múltipla escolha para verificar uso do particípio passado.</p><div class="question-tags"><span class="subject-tag">Inglês</span><span class="meta-tag">Gramática</span><span class="meta-tag">Básico</span><span class="meta-tag">EF08LI15</span></div></div><div class="question-actions"><button type="button" aria-label="Editar questão" data-toast="Questão pronta para edição."><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 20 9-9-3-3-9 9-1 4 4-1Z"/></svg></button><button type="button" aria-label="Excluir questão" data-toast="A exclusão está protegida neste protótipo."><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg></button></div></article><article class="question" data-question-text="Tell a story about something you have learned recently."><div><h3>Tell a story about something you have learned recently.</h3><p>Questão de produção oral para conectar o conteúdo à vida do aluno.</p><div class="question-tags"><span class="subject-tag">Inglês</span><span class="meta-tag">Produção oral</span><span class="meta-tag">Avançado</span><span class="meta-tag">EF09LI12</span></div></div><div class="question-actions"><button type="button" aria-label="Editar questão" data-toast="Questão pronta para edição."><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 20 9-9-3-3-9 9-1 4 4-1Z"/></svg></button><button type="button" aria-label="Excluir questão" data-toast="A exclusão está protegida neste protótipo."><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg></button></div></article></div><div class="empty-note" id="question-empty">Nenhuma questão encontrada. Tente outra busca.</div></section>
+        </div>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg><span></span></div>
+
+    <script>
+      const views = [...document.querySelectorAll('.view')];
+      const navButtons = [...document.querySelectorAll('[data-view-target]')];
+      const breadcrumb = document.querySelector('#breadcrumb-current');
+      const labels = { dashboard: 'Visão geral', builder: 'Criar aula', loading: 'Criando aula', result: 'Travel experiences', bank: 'Banco de questões' };
+      let toastTimer;
+
+      function showView(name) {
+        views.forEach((view) => view.classList.toggle('is-active', view.id === `view-${name}`));
+        navButtons.forEach((button) => {
+          if (button.dataset.viewTarget) button.setAttribute('aria-current', button.dataset.viewTarget === name ? 'page' : 'false');
+        });
+        breadcrumb.textContent = labels[name] || 'Workspace';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function showToast(message) {
+        const toast = document.querySelector('#toast');
+        toast.querySelector('span').textContent = message;
+        toast.classList.add('is-visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 3200);
+      }
+
+      navButtons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+          const target = button.dataset.viewTarget;
+          if (!target) return;
+          event.preventDefault();
+          showView(target);
+        });
+      });
+
+      document.querySelectorAll('[data-mode]').forEach((button) => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('[data-mode]').forEach((item) => item.classList.toggle('is-selected', item === button));
+          showToast(button.dataset.mode === 'creative' ? 'Modo Criativo ativado: mais contexto e alternativas na geração.' : 'Modo Fast ativado: uma geração enxuta e rápida.');
+        });
+      });
+
+      document.querySelectorAll('[data-toast]').forEach((button) => button.addEventListener('click', () => showToast(button.dataset.toast)));
+
+      const form = document.querySelector('#lesson-form');
+      let loadingTimeout;
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        showView('loading');
+        const steps = [...document.querySelectorAll('.loading-step')];
+        const progress = document.querySelector('#loading-progress');
+        steps.forEach((step, index) => {
+          step.classList.toggle('is-current', index === 0);
+          step.classList.remove('is-done');
+        });
+        progress.style.width = '28%';
+        clearTimeout(loadingTimeout);
+        let current = 0;
+        const advance = () => {
+          if (current < steps.length) {
+            steps[current].classList.remove('is-current');
+            steps[current].classList.add('is-done');
+            current += 1;
+            if (current < steps.length) steps[current].classList.add('is-current');
+            progress.style.width = `${Math.min(28 + current * 28, 100)}%`;
+            loadingTimeout = setTimeout(advance, 850);
+          } else {
+            loadingTimeout = setTimeout(() => showView('result'), 500);
+          }
+        };
+        loadingTimeout = setTimeout(advance, 850);
+      });
+
+      document.querySelectorAll('.ai-action').forEach((button) => button.addEventListener('click', () => {
+        const feedback = document.querySelector('#assistant-feedback');
+        feedback.textContent = button.dataset.aiAction;
+        feedback.classList.add('is-visible');
+        showToast('Sugestão aplicada ao rascunho.');
+      }));
+
+      document.querySelector('#assistant-send').addEventListener('click', () => {
+        const input = document.querySelector('#assistant-question');
+        const value = input.value.trim();
+        if (!value) { showToast('Escreva uma pergunta para o assistente.'); return; }
+        const feedback = document.querySelector('#assistant-feedback');
+        feedback.textContent = `Entendi: “${value}”. Neste protótipo, a sugestão ficaria pronta para sua revisão.`;
+        feedback.classList.add('is-visible');
+        input.value = '';
+      });
+
+      document.querySelector('#assistant-question').addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') document.querySelector('#assistant-send').click();
+      });
+
+      const questionSearch = document.querySelector('#question-search');
+      questionSearch.addEventListener('input', () => {
+        const term = questionSearch.value.toLowerCase();
+        let visible = 0;
+        document.querySelectorAll('.question').forEach((question) => {
+          const matches = question.dataset.questionText.toLowerCase().includes(term);
+          question.style.display = matches ? 'grid' : 'none';
+          if (matches) visible += 1;
+        });
+        document.querySelector('#question-empty').style.display = visible ? 'none' : 'block';
+      });
+    </script>
+  </body>
+</html>

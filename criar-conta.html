@@ -1,0 +1,1388 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#faf7f2" />
+    <title>Criar sua conta · Gerador de Aulas</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap');
+
+      :root {
+        --color-bg: #faf7f2;
+        --color-surface: #ffffff;
+        --color-surface-muted: #f3ede4;
+        --color-text: #4a4643;
+        --color-heading: #3b2923;
+        --color-text-muted: #77716c;
+        --color-border: #cfc7bf;
+        --color-border-soft: #e9e4de;
+        --color-primary: #b85c47;
+        --color-primary-hover: #9a4f3d;
+        --color-accent: #d9823b;
+        --color-success: #5f7f67;
+        --color-error: #b64b45;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        --shadow-sm: 0 1px 3px rgba(59, 41, 35, 0.06);
+        --shadow-md: 0 16px 40px rgba(59, 41, 35, 0.11);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: Inter, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      a {
+        color: var(--color-primary-hover);
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .auth-shell {
+        display: grid;
+        min-height: 100vh;
+        grid-template-columns: minmax(420px, 0.92fr) minmax(520px, 1.08fr);
+      }
+
+      .brand-panel {
+        position: relative;
+        display: flex;
+        min-height: 100%;
+        overflow: hidden;
+        padding: 48px clamp(40px, 6vw, 92px);
+        background: var(--color-surface-muted);
+        isolation: isolate;
+      }
+
+      .brand-panel::before,
+      .brand-panel::after {
+        position: absolute;
+        z-index: -1;
+        border-radius: 999px;
+        content: '';
+        pointer-events: none;
+      }
+
+      .brand-panel::before {
+        top: -160px;
+        left: -110px;
+        width: 430px;
+        height: 430px;
+        background: #ead2c5;
+        opacity: 0.72;
+      }
+
+      .brand-panel::after {
+        right: -160px;
+        bottom: -130px;
+        width: 460px;
+        height: 460px;
+        border: 1px solid rgba(184, 92, 71, 0.18);
+      }
+
+      .brand-content {
+        display: flex;
+        width: min(100%, 500px);
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 48px;
+      }
+
+      .wordmark {
+        display: inline-flex;
+        width: fit-content;
+        align-items: center;
+        gap: 11px;
+        color: var(--color-heading);
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .wordmark-mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 11px;
+        background: var(--color-primary);
+        box-shadow: 0 5px 12px rgba(184, 92, 71, 0.22);
+        color: #fff;
+      }
+
+      .brand-copy {
+        max-width: 440px;
+        margin-top: auto;
+        padding-top: 34px;
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        color: var(--color-primary-hover);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.11em;
+        line-height: 16px;
+        text-transform: uppercase;
+      }
+
+      .brand-copy h2 {
+        max-width: 460px;
+        margin: 0;
+        color: var(--color-heading);
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: clamp(40px, 4.2vw, 62px);
+        font-weight: 400;
+        letter-spacing: -0.035em;
+        line-height: 1.03;
+      }
+
+      .brand-copy p {
+        max-width: 410px;
+        margin: 24px 0 0;
+        color: var(--color-text-muted);
+        font-size: 16px;
+        line-height: 26px;
+      }
+
+      .lesson-preview {
+        position: relative;
+        width: min(100%, 450px);
+        margin-top: 8px;
+        padding: 22px 22px 20px;
+        border: 1px solid rgba(184, 92, 71, 0.15);
+        border-radius: var(--radius-xl);
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow: var(--shadow-md);
+        transform: rotate(-2deg);
+      }
+
+      .preview-header,
+      .preview-meta,
+      .preview-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .preview-header {
+        color: var(--color-text-muted);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .preview-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--color-success);
+        font-size: 11px;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .preview-status::before {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--color-success);
+        content: '';
+      }
+
+      .preview-title-row {
+        align-items: flex-start;
+        gap: 14px;
+        margin-top: 21px;
+      }
+
+      .preview-title {
+        margin: 0;
+        color: var(--color-heading);
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 29px;
+      }
+
+      .sparkle {
+        display: grid;
+        flex: 0 0 auto;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 12px;
+        background: #f9e2c9;
+        color: var(--color-accent);
+      }
+
+      .preview-lines {
+        display: grid;
+        gap: 9px;
+        margin-top: 19px;
+      }
+
+      .preview-line {
+        width: 100%;
+        height: 7px;
+        border-radius: 99px;
+        background: #e7ddd3;
+      }
+
+      .preview-line:nth-child(2) {
+        width: 82%;
+      }
+
+      .preview-line:nth-child(3) {
+        width: 63%;
+      }
+
+      .preview-meta {
+        justify-content: flex-start;
+        gap: 16px;
+        margin-top: 20px;
+        color: var(--color-text-muted);
+        font-size: 11px;
+      }
+
+      .preview-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .form-panel {
+        display: flex;
+        min-height: 100%;
+        align-items: center;
+        justify-content: center;
+        padding: 48px clamp(32px, 7vw, 112px);
+        background: var(--color-bg);
+      }
+
+      .form-card {
+        width: min(100%, 434px);
+      }
+
+      .form-topline {
+        margin-bottom: 50px;
+        color: var(--color-text-muted);
+        font-size: 13px;
+        line-height: 20px;
+        text-align: right;
+      }
+
+      .form-topline a {
+        margin-left: 4px;
+      }
+
+      .form-heading {
+        margin-bottom: 30px;
+      }
+
+      .form-heading h1 {
+        margin: 0;
+        color: var(--color-heading);
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: 42px;
+        font-weight: 400;
+        letter-spacing: -0.03em;
+        line-height: 48px;
+      }
+
+      .form-heading p {
+        margin: 10px 0 0;
+        color: var(--color-text-muted);
+        font-size: 15px;
+        line-height: 23px;
+      }
+
+      .step-indicator {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 27px;
+        color: var(--color-text-muted);
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .step-indicator-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        white-space: nowrap;
+      }
+
+      .step-indicator-item.is-active,
+      .step-indicator-item.is-done {
+        color: var(--color-primary-hover);
+      }
+
+      .step-indicator-number {
+        display: grid;
+        width: 22px;
+        height: 22px;
+        place-items: center;
+        border: 1px solid var(--color-border);
+        border-radius: 50%;
+        background: var(--color-bg);
+        font-size: 10px;
+      }
+
+      .step-indicator-item.is-active .step-indicator-number {
+        border-color: var(--color-primary);
+        background: var(--color-primary);
+        color: #fff;
+      }
+
+      .step-indicator-item.is-done .step-indicator-number {
+        border-color: var(--color-success);
+        background: #eef4ee;
+        color: var(--color-success);
+      }
+
+      .step-indicator-separator {
+        width: 28px;
+        height: 1px;
+        background: var(--color-border-soft);
+      }
+
+      .signup-step {
+        display: none;
+        animation: step-in 180ms ease-out;
+      }
+
+      .signup-step.is-active {
+        display: block;
+      }
+
+      .signup-step[hidden] {
+        display: none;
+      }
+
+      @keyframes step-in {
+        from { opacity: 0; transform: translateX(5px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+
+      .step-heading {
+        margin: 0 0 8px;
+        color: var(--color-heading);
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: 28px;
+        font-weight: 400;
+        letter-spacing: -0.025em;
+        line-height: 32px;
+      }
+
+      .step-description {
+        margin: 0 0 22px;
+        color: var(--color-text-muted);
+        font-size: 13px;
+        line-height: 20px;
+      }
+
+      .google-button,
+      .primary-button {
+        display: inline-flex;
+        width: 100%;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+      }
+
+      .google-button {
+        gap: 10px;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface);
+        color: var(--color-heading);
+      }
+
+      .google-button:hover {
+        border-color: var(--color-primary);
+        background: #fffdfb;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .google-button:active,
+      .primary-button:active {
+        transform: translateY(1px);
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin: 24px 0;
+        color: #9a928b;
+        font-size: 12px;
+        line-height: 16px;
+      }
+
+      .divider::before,
+      .divider::after {
+        height: 1px;
+        flex: 1;
+        background: var(--color-border-soft);
+        content: '';
+      }
+
+      .form-fields {
+        display: grid;
+        gap: 17px;
+      }
+
+      .field {
+        display: grid;
+        gap: 7px;
+      }
+
+      .field label {
+        color: var(--color-heading);
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 18px;
+      }
+
+      .input-wrap {
+        position: relative;
+      }
+
+      .input {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 14px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        outline: none;
+        background: var(--color-surface);
+        color: var(--color-text);
+        font-size: 14px;
+        line-height: 22px;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+      }
+
+      .input::placeholder {
+        color: #a49c95;
+      }
+
+      .input:hover {
+        border-color: #b8aea6;
+      }
+
+      .input:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 4px rgba(184, 92, 71, 0.15);
+      }
+
+      .input.has-toggle {
+        padding-right: 48px;
+      }
+
+      .input[aria-invalid='true'] {
+        border-color: var(--color-error);
+      }
+
+      .input[aria-invalid='true']:focus {
+        box-shadow: 0 0 0 4px rgba(182, 75, 69, 0.13);
+      }
+
+      .password-toggle {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        display: grid;
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        place-items: center;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        transform: translateY(-50%);
+      }
+
+      .password-toggle:hover,
+      .password-toggle:focus-visible {
+        background: var(--color-surface-muted);
+        color: var(--color-heading);
+        outline: none;
+      }
+
+      .field-hint {
+        color: var(--color-text-muted);
+        font-size: 11px;
+        line-height: 16px;
+      }
+
+      .error-message {
+        display: none;
+        color: var(--color-error);
+        font-size: 11px;
+        line-height: 16px;
+      }
+
+      .error-message.is-visible {
+        display: block;
+      }
+
+      .password-meter {
+        display: grid;
+        gap: 7px;
+        margin-top: -2px;
+      }
+
+      .meter-bars {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4px;
+      }
+
+      .meter-bars span {
+        height: 3px;
+        border-radius: 99px;
+        background: var(--color-border-soft);
+        transition: background 150ms ease;
+      }
+
+      .meter-bars[data-strength='1'] span:nth-child(1) {
+        background: var(--color-error);
+      }
+
+      .meter-bars[data-strength='2'] span:nth-child(-n + 2) {
+        background: var(--color-accent);
+      }
+
+      .meter-bars[data-strength='3'] span:nth-child(-n + 3) {
+        background: #b3a054;
+      }
+
+      .meter-bars[data-strength='4'] span {
+        background: var(--color-success);
+      }
+
+      .meter-label {
+        min-height: 16px;
+        color: var(--color-text-muted);
+        font-size: 11px;
+        line-height: 16px;
+      }
+
+      .terms {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 21px 0 22px;
+        color: var(--color-text-muted);
+        font-size: 11px;
+        line-height: 17px;
+      }
+
+      .terms input {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 auto;
+        margin: 1px 0 0;
+        accent-color: var(--color-primary);
+        cursor: pointer;
+      }
+
+      .terms label {
+        cursor: pointer;
+      }
+
+      .terms a {
+        color: var(--color-primary-hover);
+      }
+
+      .plan-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .plan-option {
+        position: relative;
+      }
+
+      .plan-option input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+      }
+
+      .plan-option label {
+        display: grid;
+        grid-template-columns: 19px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 12px;
+        min-height: 82px;
+        padding: 13px 15px;
+        border: 1px solid var(--color-border-soft);
+        border-radius: var(--radius-md);
+        background: var(--color-surface);
+        cursor: pointer;
+        transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+      }
+
+      .plan-option label:hover {
+        border-color: var(--color-primary);
+        background: #fffdfb;
+      }
+
+      .plan-option input:checked + label {
+        border-color: var(--color-primary);
+        background: #f8ebe5;
+        box-shadow: 0 0 0 3px rgba(184, 92, 71, 0.11);
+      }
+
+      .plan-option input:focus-visible + label {
+        outline: 3px solid rgba(217, 130, 59, 0.42);
+        outline-offset: 2px;
+      }
+
+      .plan-option label::before {
+        width: 18px;
+        height: 18px;
+        border: 1px solid var(--color-border);
+        border-radius: 50%;
+        background: var(--color-surface);
+        content: '';
+      }
+
+      .plan-option input:checked + label::before {
+        border-color: var(--color-primary);
+        box-shadow: inset 0 0 0 4px var(--color-surface), inset 0 0 0 9px var(--color-primary);
+      }
+
+      .plan-option-copy {
+        min-width: 0;
+      }
+
+      .plan-option-title {
+        display: block;
+        color: var(--color-heading);
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 18px;
+      }
+
+      .plan-option-description {
+        display: block;
+        margin-top: 3px;
+        color: var(--color-text-muted);
+        font-size: 11px;
+        line-height: 16px;
+      }
+
+      .plan-option-badge {
+        display: inline-flex;
+        min-height: 23px;
+        align-items: center;
+        padding: 0 8px;
+        border-radius: 99px;
+        background: #f3ede4;
+        color: var(--color-primary-hover);
+        font-size: 10px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .plan-option:first-child .plan-option-badge {
+        background: #eef4ee;
+        color: var(--color-success);
+      }
+
+      .plan-error {
+        margin-top: 9px;
+      }
+
+      .step-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-top: 24px;
+      }
+
+      .step-actions .primary-button {
+        width: auto;
+        min-width: 194px;
+        padding: 0 18px;
+      }
+
+      .back-button {
+        min-height: 42px;
+        padding: 0 2px;
+        border: 0;
+        background: transparent;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .back-button:hover {
+        color: var(--color-heading);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .step-note {
+        color: var(--color-text-muted);
+        font-size: 11px;
+        line-height: 16px;
+      }
+
+      .primary-button {
+        border: 1px solid var(--color-primary);
+        background: var(--color-primary);
+        color: #fff;
+      }
+
+      .primary-button:hover:not(:disabled) {
+        border-color: var(--color-primary-hover);
+        background: var(--color-primary-hover);
+        box-shadow: 0 6px 14px rgba(154, 79, 61, 0.2);
+      }
+
+      .primary-button:focus-visible,
+      .google-button:focus-visible {
+        outline: 3px solid rgba(217, 130, 59, 0.42);
+        outline-offset: 3px;
+      }
+
+      .primary-button:disabled {
+        border-color: #dbcfc5;
+        background: #dbcfc5;
+        cursor: not-allowed;
+      }
+
+      .form-footnote {
+        margin: 19px 0 0;
+        color: var(--color-text-muted);
+        font-size: 11px;
+        line-height: 17px;
+        text-align: center;
+      }
+
+      .form-alert {
+        display: none;
+        align-items: flex-start;
+        gap: 9px;
+        margin: 0 0 18px;
+        padding: 11px 12px;
+        border: 1px solid rgba(95, 127, 103, 0.24);
+        border-radius: var(--radius-sm);
+        background: #f1f6f1;
+        color: #48624f;
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .form-alert.is-visible {
+        display: flex;
+      }
+
+      .form-alert strong {
+        display: block;
+        color: #3e5745;
+      }
+
+      .form-alert svg {
+        flex: 0 0 auto;
+        margin-top: 1px;
+      }
+
+      .is-hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 980px) {
+        .auth-shell {
+          grid-template-columns: minmax(350px, 0.82fr) minmax(480px, 1.18fr);
+        }
+
+        .brand-panel {
+          padding-inline: 40px;
+        }
+
+        .form-panel {
+          padding-inline: 52px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .auth-shell {
+          display: block;
+        }
+
+        .brand-panel {
+          min-height: auto;
+          padding: 28px 24px 42px;
+        }
+
+        .brand-content {
+          gap: 31px;
+        }
+
+        .brand-copy {
+          padding-top: 18px;
+        }
+
+        .brand-copy h2 {
+          max-width: 560px;
+          font-size: clamp(39px, 10vw, 52px);
+        }
+
+        .brand-copy p {
+          margin-top: 16px;
+        }
+
+        .lesson-preview {
+          max-width: 520px;
+          margin: 0 auto;
+          transform: rotate(-1deg);
+        }
+
+        .form-panel {
+          min-height: 0;
+          padding: 38px 24px 48px;
+        }
+
+        .form-topline {
+          margin-bottom: 43px;
+        }
+
+        .step-actions {
+          align-items: stretch;
+          flex-direction: column-reverse;
+        }
+
+        .step-actions .primary-button {
+          width: 100%;
+        }
+
+        .back-button {
+          align-self: center;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .brand-panel {
+          padding-inline: 20px;
+        }
+
+        .form-panel {
+          padding-inline: 20px;
+        }
+
+        .form-heading h1 {
+          font-size: 38px;
+          line-height: 44px;
+        }
+
+        .step-indicator {
+          gap: 7px;
+        }
+
+        .step-indicator-separator {
+          width: 18px;
+        }
+
+        .preview-meta {
+          gap: 10px;
+          font-size: 10px;
+        }
+      }
+
+      @media (min-width: 761px) and (max-height: 760px) {
+        .brand-panel {
+          padding-block: 22px;
+        }
+
+        .brand-content {
+          gap: 20px;
+        }
+
+        .brand-copy {
+          padding-top: 10px;
+        }
+
+        .brand-copy p {
+          margin-top: 16px;
+        }
+
+        .lesson-preview {
+          padding: 16px 18px 15px;
+        }
+
+        .preview-title-row {
+          margin-top: 14px;
+        }
+
+        .preview-lines {
+          margin-top: 14px;
+        }
+
+        .preview-meta {
+          margin-top: 14px;
+        }
+
+        .form-panel {
+          padding-block: 8px;
+        }
+
+        .form-topline {
+          margin-bottom: 30px;
+        }
+
+        .form-heading {
+          margin-bottom: 22px;
+        }
+
+        .form-fields {
+          gap: 13px;
+        }
+
+        .terms {
+          margin-block: 16px 17px;
+        }
+
+        .form-footnote {
+          margin-top: 12px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="auth-shell">
+      <section class="brand-panel" aria-labelledby="brand-title">
+        <div class="brand-content">
+          <a class="wordmark" href="index.html" aria-label="Gerador de Aulas — início">
+            <span class="wordmark-mark" aria-hidden="true">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
+                <path d="M8 6h8M8 10h8" />
+              </svg>
+            </span>
+            Gerador de Aulas
+          </a>
+
+          <div class="brand-copy">
+            <p class="eyebrow">Seu copiloto de preparação</p>
+            <h2 id="brand-title">Mais tempo para ensinar. Menos tempo começando do zero.</h2>
+            <p>Crie aulas, atividades e avaliações coerentes com a sua turma — com a IA ao seu lado e você no controle.</p>
+          </div>
+
+          <div class="lesson-preview" aria-label="Prévia de uma aula criada">
+            <div class="preview-header">
+              <span>Minha próxima aula</span>
+              <span class="preview-status">Pronta para revisar</span>
+            </div>
+            <div class="preview-title-row">
+              <h3 class="preview-title">O ciclo da água na natureza</h3>
+              <span class="sparkle" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m12 3-1.2 5.8L5 10l5.8 1.2L12 17l1.2-5.8L19 10l-5.8-1.2L12 3Z" />
+                  <path d="m19 16-.55 2.45L16 19l2.45.55L19 22l.55-2.45L22 19l-2.45-.55L19 16Z" />
+                </svg>
+              </span>
+            </div>
+            <div class="preview-lines" aria-hidden="true">
+              <span class="preview-line"></span>
+              <span class="preview-line"></span>
+              <span class="preview-line"></span>
+            </div>
+            <div class="preview-meta">
+              <span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+                </svg>
+                50 min
+              </span>
+              <span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
+                </svg>
+                Ciências · 6º ano
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-panel" aria-labelledby="form-title">
+        <div class="form-card">
+          <p class="form-topline">Já tem uma conta?<a href="login.html">Entrar</a></p>
+
+          <div class="form-heading">
+            <h1 id="form-title">Crie sua conta</h1>
+            <p>Comece seu workspace pessoal em poucos passos.</p>
+          </div>
+
+          <nav class="step-indicator" aria-label="Etapas do cadastro">
+            <span class="step-indicator-item is-active" id="account-step-indicator">
+              <span class="step-indicator-number">1</span>
+              Sua conta
+            </span>
+            <span class="step-indicator-separator" aria-hidden="true"></span>
+            <span class="step-indicator-item" id="plan-step-indicator">
+              <span class="step-indicator-number">2</span>
+              Escolha seu plano
+            </span>
+          </nav>
+
+          <div class="form-alert" id="success-alert" role="status" aria-live="polite">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            <span><strong>Conta criada com sucesso.</strong>Seu workspace pessoal está pronto para começar.</span>
+          </div>
+
+          <form id="signup-form" novalidate>
+            <section class="signup-step is-active" id="account-step" aria-labelledby="account-step-title">
+              <h2 class="step-heading" id="account-step-title">Seus dados</h2>
+              <p class="step-description">Crie seu acesso para começar a preparar aulas com mais autonomia.</p>
+
+              <button class="google-button" type="button" id="google-button">
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="#4285F4" d="M21.35 12.27c0-.72-.06-1.42-.18-2.09H12v3.96h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.26Z" />
+                  <path fill="#34A853" d="M12 21.75c2.63 0 4.84-.87 6.45-2.22l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.7-1.72-5.47-4.03H3.29v2.53A9.75 9.75 0 0 0 12 21.75Z" />
+                  <path fill="#FBBC05" d="M6.53 13.97a5.87 5.87 0 0 1 0-3.74V7.7H3.29a9.75 9.75 0 0 0 0 8.8l3.24-2.53Z" />
+                  <path fill="#EA4335" d="M12 6.2c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.4 14.63 2.25 12 2.25a9.75 9.75 0 0 0-8.71 5.45l3.24 2.53C7.3 7.92 9.46 6.2 12 6.2Z" />
+                </svg>
+                Continuar com Google
+              </button>
+
+              <div class="divider" aria-hidden="true"><span>ou cadastre-se com e-mail</span></div>
+
+              <div class="form-fields">
+                <div class="field">
+                  <label for="full-name">Nome completo</label>
+                  <input class="input" id="full-name" name="fullName" type="text" autocomplete="name" placeholder="Como podemos chamar você?" required />
+                  <span class="error-message" id="full-name-error">Digite seu nome completo.</span>
+                </div>
+
+                <div class="field">
+                  <label for="email">E-mail</label>
+                  <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="voce@exemplo.com" required />
+                  <span class="error-message" id="email-error">Digite um e-mail válido.</span>
+                </div>
+
+                <div class="field">
+                  <label for="password">Senha</label>
+                  <div class="input-wrap">
+                    <input class="input has-toggle" id="password" name="password" type="password" autocomplete="new-password" placeholder="Crie uma senha segura" minlength="8" required aria-describedby="password-hint password-meter-label" />
+                    <button class="password-toggle" id="password-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false">
+                      <svg id="eye-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" /><circle cx="12" cy="12" r="2.5" />
+                      </svg>
+                    </button>
+                  </div>
+                  <span class="field-hint" id="password-hint">Use pelo menos 8 caracteres, com letras e números.</span>
+                  <div class="password-meter" aria-live="polite">
+                    <div class="meter-bars" id="meter-bars" data-strength="0" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                    <span class="meter-label" id="password-meter-label"></span>
+                  </div>
+                  <span class="error-message" id="password-error">Use pelo menos 8 caracteres, com letras e números.</span>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <span class="step-note">Etapa 1 de 2</span>
+                <button class="primary-button" id="continue-button" type="button">Continuar para escolher plano</button>
+              </div>
+            </section>
+
+            <section class="signup-step" id="plan-step" aria-labelledby="plan-step-title" hidden>
+              <h2 class="step-heading" id="plan-step-title">Escolha como começar</h2>
+              <p class="step-description">Selecione o plano que combina com o seu momento. Você poderá mudar depois.</p>
+
+              <div class="plan-grid" role="radiogroup" aria-label="Planos disponíveis">
+                <div class="plan-option">
+                  <input id="plan-trial" name="plan" type="radio" value="trial" checked />
+                  <label for="plan-trial">
+                    <span class="plan-option-copy">
+                      <span class="plan-option-title">Teste grátis</span>
+                      <span class="plan-option-description">Experimente o gerador com até 3 aulas geradas.</span>
+                    </span>
+                    <span class="plan-option-badge">3 aulas</span>
+                  </label>
+                </div>
+
+                <div class="plan-option">
+                  <input id="plan-light" name="plan" type="radio" value="light" />
+                  <label for="plan-light">
+                    <span class="plan-option-copy">
+                      <span class="plan-option-title">Plano Light</span>
+                      <span class="plan-option-description">O essencial para planejar aulas com praticidade.</span>
+                    </span>
+                    <span class="plan-option-badge">Essencial</span>
+                  </label>
+                </div>
+
+                <div class="plan-option">
+                  <input id="plan-full" name="plan" type="radio" value="full" />
+                  <label for="plan-full">
+                    <span class="plan-option-copy">
+                      <span class="plan-option-title">Plano Full</span>
+                      <span class="plan-option-description">A experiência completa para criar, revisar e evoluir.</span>
+                    </span>
+                    <span class="plan-option-badge">Completo</span>
+                  </label>
+                </div>
+              </div>
+              <span class="error-message plan-error" id="plan-error">Escolha um plano para continuar.</span>
+
+              <div class="terms">
+                <input id="terms" name="terms" type="checkbox" required />
+                <label for="terms">Li e concordo com os <a href="#termos">Termos de uso</a> e a <a href="#privacidade">Política de privacidade</a>.</label>
+              </div>
+
+              <div class="step-actions">
+                <button class="back-button" id="back-button" type="button">← Voltar</button>
+                <button class="primary-button" id="submit-button" type="submit">Criar minha conta</button>
+              </div>
+            </section>
+            <p class="form-footnote">Você poderá revisar e editar tudo antes de usar sua primeira aula.</p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const form = document.querySelector('#signup-form');
+      const passwordInput = document.querySelector('#password');
+      const passwordToggle = document.querySelector('#password-toggle');
+      const meterBars = document.querySelector('#meter-bars');
+      const meterLabel = document.querySelector('#password-meter-label');
+      const successAlert = document.querySelector('#success-alert');
+      const googleButton = document.querySelector('#google-button');
+      const continueButton = document.querySelector('#continue-button');
+      const backButton = document.querySelector('#back-button');
+      const accountStep = document.querySelector('#account-step');
+      const planStep = document.querySelector('#plan-step');
+      const accountStepIndicator = document.querySelector('#account-step-indicator');
+      const planStepIndicator = document.querySelector('#plan-step-indicator');
+      const formTitle = document.querySelector('#form-title');
+      const formSubtitle = document.querySelector('.form-heading p');
+      const terms = document.querySelector('#terms');
+      const planError = document.querySelector('#plan-error');
+      const planInputs = [...document.querySelectorAll('input[name="plan"]')];
+      let currentStep = 1;
+      let googleSignup = false;
+
+      const fields = [
+        { input: document.querySelector('#full-name'), error: document.querySelector('#full-name-error') },
+        { input: document.querySelector('#email'), error: document.querySelector('#email-error') },
+        { input: passwordInput, error: document.querySelector('#password-error') },
+      ];
+
+      const passwordStrength = (value) => {
+        if (!value) return 0;
+        let score = 0;
+        if (value.length >= 8) score += 1;
+        if (/[a-zA-Z]/.test(value) && /\d/.test(value)) score += 1;
+        if (/[A-Z]/.test(value) && /[^a-zA-Z\d]/.test(value)) score += 1;
+        if (value.length >= 12) score += 1;
+        return score;
+      };
+
+      const updatePasswordMeter = () => {
+        const strength = passwordStrength(passwordInput.value);
+        const labels = ['', 'Ainda fraca', 'Razoável', 'Boa', 'Forte'];
+        meterBars.dataset.strength = String(strength);
+        meterLabel.textContent = labels[strength];
+      };
+
+      const setError = (input, error, visible) => {
+        input.setAttribute('aria-invalid', visible ? 'true' : 'false');
+        error.classList.toggle('is-visible', visible);
+      };
+
+      const validateField = ({ input, error }) => {
+        const value = input.value.trim();
+        let valid = Boolean(value);
+
+        if (input.type === 'email' && value) {
+          valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+
+        if (input === passwordInput && value) {
+          valid = value.length >= 8 && /[a-zA-Z]/.test(value) && /\d/.test(value);
+        }
+
+        setError(input, error, !valid);
+        return valid;
+      };
+
+      const setAlert = (message, visible = true) => {
+        successAlert.querySelector('span').innerHTML = message;
+        successAlert.classList.toggle('is-visible', visible);
+      };
+
+      const showStep = (step) => {
+        currentStep = step;
+        const isAccountStep = step === 1;
+
+        accountStep.hidden = !isAccountStep;
+        planStep.hidden = isAccountStep;
+        accountStep.classList.toggle('is-active', isAccountStep);
+        planStep.classList.toggle('is-active', !isAccountStep);
+        accountStepIndicator.classList.toggle('is-active', isAccountStep);
+        accountStepIndicator.classList.toggle('is-done', !isAccountStep);
+        planStepIndicator.classList.toggle('is-active', !isAccountStep);
+        accountStepIndicator.toggleAttribute('aria-current', isAccountStep);
+        planStepIndicator.toggleAttribute('aria-current', !isAccountStep);
+        formTitle.textContent = isAccountStep ? 'Crie sua conta' : 'Escolha seu plano';
+        formSubtitle.textContent = isAccountStep
+          ? 'Comece seu workspace pessoal em poucos passos.'
+          : 'Defina a melhor forma de começar sua experiência.';
+        setAlert('', false);
+      };
+
+      const validateAccountFields = () => fields.map(validateField).every(Boolean);
+
+      const focusFirstInvalidField = () => {
+        const invalidField = fields.find(({ input }) => input.getAttribute('aria-invalid') === 'true');
+        if (invalidField) invalidField.input.focus();
+      };
+
+      const validatePlan = () => {
+        const hasPlan = planInputs.some((input) => input.checked);
+        planError.classList.toggle('is-visible', !hasPlan);
+        return hasPlan;
+      };
+
+      passwordToggle.addEventListener('click', () => {
+        const showing = passwordInput.type === 'text';
+        passwordInput.type = showing ? 'password' : 'text';
+        passwordToggle.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
+        passwordToggle.setAttribute('aria-pressed', String(!showing));
+        document.querySelector('#eye-icon').innerHTML = showing
+          ? '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" /><circle cx="12" cy="12" r="2.5" />'
+          : '<path d="M3 3l18 18" /><path d="M10.6 5.2A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a18.4 18.4 0 0 1-3.2 4.1M6.2 6.2C3.5 8.1 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.8-1.2" /><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />';
+      });
+
+      passwordInput.addEventListener('input', updatePasswordMeter);
+
+      fields.forEach(({ input, error }) => {
+        input.addEventListener('blur', () => validateField({ input, error }));
+        input.addEventListener('input', () => {
+          if (input.getAttribute('aria-invalid') === 'true') validateField({ input, error });
+          setAlert('', false);
+        });
+      });
+
+      continueButton.addEventListener('click', () => {
+        googleSignup = false;
+        if (!validateAccountFields()) {
+          focusFirstInvalidField();
+          return;
+        }
+        showStep(2);
+        planInputs[0].focus();
+      });
+
+      backButton.addEventListener('click', () => {
+        showStep(1);
+        document.querySelector('#full-name').focus();
+      });
+
+      googleButton.addEventListener('click', () => {
+        googleSignup = true;
+        showStep(2);
+        setAlert('<strong>Protótipo de acesso rápido.</strong>Escolha um plano para continuar no fluxo real.');
+        planInputs[0].focus();
+      });
+
+      planInputs.forEach((input) => {
+        input.addEventListener('change', () => {
+          validatePlan();
+          setAlert('', false);
+        });
+      });
+
+      terms.addEventListener('change', () => setAlert('', false));
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (currentStep === 1) {
+          continueButton.click();
+          return;
+        }
+
+        const validFields = googleSignup || validateAccountFields();
+        const validPlan = validatePlan();
+        const validTerms = terms.checked;
+
+        if (!validFields) focusFirstInvalidField();
+        if (!validPlan) planInputs[0].focus();
+        if (!validTerms && validPlan) terms.focus();
+
+        if (!validFields || !validPlan || !validTerms) return;
+
+        const selectedPlan = planInputs.find((input) => input.checked)?.value;
+        const planNames = {
+          trial: 'Teste grátis',
+          light: 'Plano Light',
+          full: 'Plano Full',
+        };
+        setAlert(`<strong>Conta criada com sucesso.</strong>Você começou com o ${planNames[selectedPlan]}.`);
+        successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+
+      updatePasswordMeter();
+    </script>
+  </body>
+</html>
