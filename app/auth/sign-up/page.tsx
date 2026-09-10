@@ -1,11 +1,11 @@
-import { SignUpForm } from "@/components/sign-up-form";
+import CreateAccountScreen from "@/components/create-account-screen";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Gerador de Aulas | Criar conta",
+  description: "Crie seu workspace pessoal para planejar aulas com apoio da IA.",
+};
 
 export default function Page() {
-  return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <SignUpForm />
-      </div>
-    </div>
-  );
+  return <CreateAccountScreen />;
 }

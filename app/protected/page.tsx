@@ -1,11 +1,16 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { hasEnvVars } from "@/lib/utils";
 import { InfoIcon } from "lucide-react";
 import { FetchDataSteps } from "@/components/tutorial/fetch-data-steps";
 import { Suspense } from "react";
 
 async function UserDetails() {
+  if (!hasEnvVars) {
+    return "Configure as variáveis do Supabase em .env.local para validar a sessão.";
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
 

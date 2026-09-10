@@ -1,5 +1,5 @@
-import { FastClassWorkspace } from "@/components/fast-class-workspace";
+import LoginScreen from "@/components/login-screen";
 
 export default function Home() {
-  return <FastClassWorkspace />;
+  return <LoginScreen />;
 }
