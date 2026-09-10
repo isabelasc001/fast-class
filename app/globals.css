@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --color-bg: #faf7f2;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f3ede4;
+  --color-text: #4a4643;
+  --color-heading: #3b2923;
+  --color-text-muted: #77716c;
+  --color-border: #cfc7bf;
+  --color-border-soft: #e9e4de;
+  --color-primary: #b85c47;
+  --color-primary-hover: #9a4f3d;
+  --color-accent: #d9823b;
+  --color-success: #5f7f67;
+  --color-warning: #c38a3a;
+  --color-error: #b64b45;
+  --color-info: #6b7c86;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-sm: 0 1px 3px rgba(59, 41, 35, 0.06);
+  --shadow-md: 0 4px 12px rgba(59, 41, 35, 0.08);
+}
+
+@layer base {
+  * {
+    @apply border-fast-border-soft;
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--color-bg);
+    min-height: 100%;
+  }
+
+  body {
+    @apply bg-fast-bg text-fast-text;
+    margin: 0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  a {
+    color: inherit;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "DM Serif Display", Georgia, serif;
+  }
+
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-fast-primary focus-visible:ring-offset-2 focus-visible:ring-offset-fast-bg;
+  }
+}
+
+::selection {
+  background: #f0cdb6;
+  color: var(--color-heading);
+}
